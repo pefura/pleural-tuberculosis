@@ -1,2 +1,1 @@
-We use machine learning models to develop predictions model to predict pleural tuberculosis. we compare several machine learning models including ensemble 
-tree models, KNN, MLP, logistic regression...
+We use machine learning models to develop predictions model to predict pleural tuberculosis. we compare several machine learning models including ensemble Random Forest, XGBOOST, logistic regression, Support vector machine, Multilayer perceptron.
