@@ -6,7 +6,7 @@ from models import categorical, continuous
 
 # Set page config
 st.set_page_config(
-    page_title="Pleural TB Prediction",
+    page_title="Pleural TB Prediction App",
     page_icon="🏥",
     layout="wide"
 )
@@ -68,7 +68,7 @@ def main():
             st.subheader("Patient Demographics")
             sex = st.selectbox("Sex", options=['male', 'female'])
             age = st.number_input("Age", min_value=0, max_value=120)
-            imc = st.number_input("BMI (IMC)", min_value=10.0, max_value=50.0)
+            imc = st.number_input("BMI (kg/m2)", min_value=10.0, max_value=50.0)
             
             st.subheader("Clinical Symptoms")
             cough = st.selectbox("Cough", options=['yes', 'no'])
@@ -84,9 +84,9 @@ def main():
             cancer = st.selectbox("Cancer History", options=['yes', 'no'])
             
             st.subheader("Laboratory Values")
-            proteins = st.number_input("PleuralProteins Level", min_value=0.0)
-            crp_pleu = st.number_input("Pleural CRP Level", min_value=0.0)
-            ldh = st.number_input("Pleural LDH Level", min_value=0.0)
+            proteins = st.number_input("Pleural Proteins Levels", min_value=0.0)
+            crp_pleu = st.number_input("Pleural CRP Levels", min_value=0.0)
+            ldh = st.number_input("Pleural LDH Levels", min_value=0.0)
             pnn = st.number_input("Pleural Polymorphonuclear Neutrophil Count(%)", min_value=0.0)
         
         submitted = st.form_submit_button("Predict")
