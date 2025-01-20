@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
-from ml_models import categorical, continuous
+from models import categorical, continuous
 
 # Set page config
 st.set_page_config(
