@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import joblib
 
+st.error(f"DEBUG INFO: Scikit-learn Version: {sklearn.__version__}")
+st.error(f"DEBUG INFO: Numpy Version: {numpy.__version__}")
+
 # On importe les listes de variables depuis votre fichier models.py
 # Assurez-vous que models.py contient bien :
 # continuous = ['age', 'IMC', 'proteins', 'crp_pleu', 'ldh', 'PNN']
