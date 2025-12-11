@@ -29,28 +29,36 @@ def load_models():
 
 # Preprocess input data
 def preprocess_input(data, preprocessors):
-    # Convert categorical variables
-    data['sex'] = data['sex'].map({'male': 1, 'female': 0})
-    for col in ['cough', 'fever', 'sweating', 'weight_loss', 'hiv', 'cancer']:
-        data[col] = data[col].map({'yes': 1, 'no': 0})
-    
-    # Convert duration to ordinal
-    duration_map = {'<= 1 month': 0, ']1, 2 month]': 1, ']2, 3 month]': 2, '> 3 month': 3}
-    data['duration'] = data['duration'].map(duration_map)
-    
-    # Split categorical and continuous features
+    # 1. Split features
+    # Ensure we pass the raw data (strings) to the categorical imputer
     cat_data = data[categorical]
     cont_data = data[continuous]
     
-    # Impute missing values
-    cat_imputed = preprocessors['cat_imputer'].transform(cat_data)
-    cont_imputed = preprocessors['cont_imputer'].transform(cont_data)
+    # 2. Impute Categorical Data (Raw Strings)
+    # The imputer returns a numpy array, we convert back to DF to map values easily
+    cat_imputed_array = preprocessors['cat_imputer'].transform(cat_data)
+    cat_imputed_df = pd.DataFrame(cat_imputed_array, columns=categorical)
     
-    # Scale continuous features
+    # 3. Map Categorical Values to Numbers (AFTER Imputation)
+    # Note: Ensure the mapped values (1/0) match what your model was trained on
+    cat_imputed_df['sex'] = cat_imputed_df['sex'].map({'male': 1, 'female': 0})
+    
+    binary_cols = ['cough', 'fever', 'sweating', 'weight_loss', 'hiv', 'cancer']
+    for col in binary_cols:
+        cat_imputed_df[col] = cat_imputed_df[col].map({'yes': 1, 'no': 0})
+    
+    duration_map = {'<= 1 month': 0, ']1, 2 month]': 1, ']2, 3 month]': 2, '> 3 month': 3}
+    cat_imputed_df['duration'] = cat_imputed_df['duration'].map(duration_map)
+    
+    # Convert the mapped dataframe back to numpy array for final concatenation
+    cat_final = cat_imputed_df.to_numpy()
+
+    # 4. Process Continuous Data
+    cont_imputed = preprocessors['cont_imputer'].transform(cont_data)
     cont_scaled = preprocessors['scaler'].transform(cont_imputed)
     
-    # Combine features
-    return np.hstack((cat_imputed, cont_scaled))
+    # 5. Combine features
+    return np.hstack((cat_final, cont_scaled))
 
 # Main app
 def main():
@@ -93,10 +101,11 @@ def main():
     
     if submitted:
         # Prepare input data
+        # FIXED: Keys changed to lowercase (imc, pnn) to likely match 'continuous' list
         input_data = pd.DataFrame({
             'sex': [sex],
             'age': [age],
-            'IMC': [imc],
+            'imc': [imc], 
             'cough': [cough],
             'fever': [fever],
             'sweating': [sweating],
@@ -107,7 +116,7 @@ def main():
             'proteins': [proteins],
             'crp_pleu': [crp_pleu],
             'ldh': [ldh],
-            'PNN': [pnn]
+            'pnn': [pnn]
         })
         
         # Preprocess input
